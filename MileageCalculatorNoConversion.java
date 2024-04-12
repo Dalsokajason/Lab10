@@ -6,12 +6,15 @@
  * Last Modified: Apr 15, 2019
  * Description:  
  */
-package ch16;
+package Lab10;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
@@ -48,12 +51,15 @@ public class MileageCalculatorNoConversion extends Application {
     private RadioButton rbKPL = new RadioButton(altResult);
     private ToggleGroup tgConv = new ToggleGroup();
     
+    private ObservableList<String> items = FXCollections.observableArrayList(defaultResult, altResult);
+	private ComboBox<String> cmb1 = new ComboBox<>(items);
+    
     private GridPane mainPane = new GridPane();
     
     public void start(Stage primaryStage) {   	
     	// set toggle group for RadioButtons
-    	rbMPG.setToggleGroup(tgConv);
-    	rbKPL.setToggleGroup(tgConv);
+    	//rbMPG.setToggleGroup(tgConv);
+    	//rbKPL.setToggleGroup(tgConv);
     	
         // set preferences for UI components
         tfDistance.setMaxWidth(txtWidth);
@@ -69,8 +75,8 @@ public class MileageCalculatorNoConversion extends Application {
         
         // add items to mainPane
         mainPane.add(lblEffType, 0, 0);
-        mainPane.add(rbMPG, 0, 1);
-        mainPane.add(rbKPL, 1, 1);
+        //mainPane.add(rbMPG, 0, 1);
+        mainPane.add(cmb1, 1, 1);
         mainPane.add(lblDistance, 0, 2);
         mainPane.add(tfDistance, 1, 2);
         mainPane.add(lblCapacity, 0, 3);
@@ -88,6 +94,7 @@ public class MileageCalculatorNoConversion extends Application {
         rbKPL.setOnAction(e -> changeLabels());
         rbMPG.setOnAction(e -> changeLabels());     
         btnReset.setOnAction(e -> resetForm());
+        cmb1.setOnAction(e -> changeLabels());
         
         // create a scene and place it in the stage
         Scene scene = new Scene(mainPane); 
@@ -108,7 +115,7 @@ public class MileageCalculatorNoConversion extends Application {
      */
     private void changeLabels() {
     	// distinguish between L/100KM and MPG
-    	if (rbKPL.isSelected() && lblCapacity.getText().equals(defaultCapacity)) {
+    	if (cmb1.getValue().equals(altResult)) {
         	// update labels
         	lblCapacity.setText(altCapacity);
         	lblDistance.setText(altMileage);
@@ -137,7 +144,7 @@ public class MileageCalculatorNoConversion extends Application {
 
         // check for type of calculation
         double result = 0.0;
-        if (rbKPL.isSelected()) {
+        if (cmb1.getValue().equals(altResult)) {
         	// liters / 100KM
         	result = (distance != 0) ? capacity/(distance/100.0) : 0;
         } else {
@@ -161,6 +168,7 @@ public class MileageCalculatorNoConversion extends Application {
         lblCapacity.setText(defaultCapacity);
     	lblDistance.setText(defaultMileage);
     	lblResult.setText(defaultResult);
+    	cmb1.getSelectionModel().select(0);
     }
 	
 	
